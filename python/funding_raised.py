@@ -1,6 +1,35 @@
 import csv
+from csv_utils import get_row_from_csv_data
 
 class FundingRaised:
+  
+  PERMALINK_INDEX = 0
+  COMPANY_NAME_INDEX = 1
+  NUMBER_EMPLOYEES_INDEX = 2
+  CATEGORY_INDEX = 3
+  CITY_INDEX = 4
+  STATE_INDEX = 5
+  FUNDED_DATE_INDEX = 6
+  RAISED_AMOUNT_INDEX = 7
+  RAISED_CURRENCY_INDEX = 8
+  ROUND_INDEX = 9
+  
+  @staticmethod
+  def _map_row_to_dict(row):
+    """Convert a CSV row array into a mapped dictionary."""
+    return {
+      'permalink': row[FundingRaised.PERMALINK_INDEX],
+      'company_name': row[FundingRaised.COMPANY_NAME_INDEX],
+      'number_employees': row[FundingRaised.NUMBER_EMPLOYEES_INDEX],
+      'category': row[FundingRaised.CATEGORY_INDEX],
+      'city': row[FundingRaised.CITY_INDEX],
+      'state': row[FundingRaised.STATE_INDEX],
+      'funded_date': row[FundingRaised.FUNDED_DATE_INDEX],
+      'raised_amount': row[FundingRaised.RAISED_AMOUNT_INDEX],
+      'raised_currency': row[FundingRaised.RAISED_CURRENCY_INDEX],
+      'round': row[FundingRaised.ROUND_INDEX]
+    }
+
   @staticmethod
   def where(options = {}):
     with open("../startup_funding.csv", "rt") as csvfile:
@@ -11,49 +40,21 @@ class FundingRaised:
       for row in data:
         csv_data.append(row)
 
-    funding = []
     if 'company_name' in options:
-      result = []
-      for row in csv_data:
-        if row[1] == options['company_name']:
-          result.append(row)
-      csv_data = result
+      csv_data = get_row_from_csv_data(options['company_name'], csv_data, FundingRaised.COMPANY_NAME_INDEX)
 
     if 'city' in options:
-      result = []
-      for row in csv_data:
-        if row[4] == options['city']:
-          result.append(row)
-      csv_data = result
+      csv_data = get_row_from_csv_data(options['city'], csv_data, FundingRaised.CITY_INDEX)
 
     if 'state' in options:
-      result = []
-      for row in csv_data:
-        if row[5] == options['state']:
-          result.append(row)
-      csv_data = result
+      csv_data = get_row_from_csv_data(options['state'], csv_data, FundingRaised.STATE_INDEX)
 
     if 'round' in options:
-      result = []
-      for row in csv_data:
-        if row[9] == options['round']:
-          result.append(row)
-      csv_data = result
-
+      csv_data = get_row_from_csv_data(options['round'], csv_data, FundingRaised.ROUND_INDEX)
+      
     output = []
     for row in csv_data:
-      mapped = {}
-      mapped['permalink'] = row[0]
-      mapped['company_name'] = row[1]
-      mapped['number_employees'] = row[2]
-      mapped['category'] = row[3]
-      mapped['city'] = row[4]
-      mapped['state'] = row[5]
-      mapped['funded_date'] = row[6]
-      mapped['raised_amount'] = row[7]
-      mapped['raised_currency'] = row[8]
-      mapped['round'] = row[9]
-      output.append(mapped)
+      output.append(FundingRaised._map_row_to_dict(row))
 
     return output
 
@@ -69,67 +70,23 @@ class FundingRaised:
 
     if 'company_name' in options:
       for row in csv_data:
-        if row[1] == options['company_name']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
+        if row[FundingRaised.COMPANY_NAME_INDEX] == options['company_name']:
+          return FundingRaised._map_row_to_dict(row)
 
     if 'city' in options:
       for row in csv_data:
-        if row[4] == options['city']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
+        if row[FundingRaised.CITY_INDEX] == options['city']:
+          return FundingRaised._map_row_to_dict(row)
 
     if 'state' in options:
       for row in csv_data:
-        if row[5] == options['state']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
+        if row[FundingRaised.STATE_INDEX] == options['state']:
+          return FundingRaised._map_row_to_dict(row)
 
     if 'round' in options:
       for row in csv_data:
-        if row[9] == options['round']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
+        if row[FundingRaised.ROUND_INDEX] == options['round']:
+          return FundingRaised._map_row_to_dict(row)
 
     raise RecordNotFound
 
