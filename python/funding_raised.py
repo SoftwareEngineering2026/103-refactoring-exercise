@@ -1,14 +1,7 @@
 import csv
+from csv_utils import get_row_from_csv_data
 
 class FundingRaised:
-  
-  @staticmethod
-  def get_row_from_csv_data(option: str, csv_data: list, row_index: int):
-    result = []
-    for row in csv_data:
-      if row[row_index] == option:
-        result.append(row)
-    return result
   
   @staticmethod
   def where(options = {}):
@@ -21,16 +14,16 @@ class FundingRaised:
         csv_data.append(row)
 
     if 'company_name' in options:
-      csv_data = FundingRaised.get_row_from_csv_data(options['company_name'], csv_data, 1)
+      csv_data = get_row_from_csv_data(options['company_name'], csv_data, 1)
 
     if 'city' in options:
-      csv_data = FundingRaised.get_row_from_csv_data(options['city'], csv_data, 4)
+      csv_data = get_row_from_csv_data(options['city'], csv_data, 4)
 
     if 'state' in options:
-      csv_data = FundingRaised.get_row_from_csv_data(options['state'], csv_data, 5)
+      csv_data = get_row_from_csv_data(options['state'], csv_data, 5)
 
     if 'round' in options:
-      csv_data = FundingRaised.get_row_from_csv_data(options['round'], csv_data, 9)
+      csv_data = get_row_from_csv_data(options['round'], csv_data, 9)
       
     output = []
     for row in csv_data:
