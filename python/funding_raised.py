@@ -1,6 +1,15 @@
 import csv
 
 class FundingRaised:
+  
+  @staticmethod
+  def get_row_from_csv_data(option: str, csv_data: list, row_index: int):
+    result = []
+    for row in csv_data:
+      if row[row_index] == option:
+        result.append(row)
+    return result
+  
   @staticmethod
   def where(options = {}):
     with open("../startup_funding.csv", "rt") as csvfile:
@@ -12,33 +21,17 @@ class FundingRaised:
         csv_data.append(row)
 
     if 'company_name' in options:
-      result = []
-      for row in csv_data:
-        if row[1] == options['company_name']:
-          result.append(row)
-      csv_data = result
+      csv_data = FundingRaised.get_row_from_csv_data(options['company_name'], csv_data, 1)
 
     if 'city' in options:
-      result = []
-      for row in csv_data:
-        if row[4] == options['city']:
-          result.append(row)
-      csv_data = result
+      csv_data = FundingRaised.get_row_from_csv_data(options['city'], csv_data, 4)
 
     if 'state' in options:
-      result = []
-      for row in csv_data:
-        if row[5] == options['state']:
-          result.append(row)
-      csv_data = result
+      csv_data = FundingRaised.get_row_from_csv_data(options['state'], csv_data, 5)
 
     if 'round' in options:
-      result = []
-      for row in csv_data:
-        if row[9] == options['round']:
-          result.append(row)
-      csv_data = result
-
+      csv_data = FundingRaised.get_row_from_csv_data(options['round'], csv_data, 9)
+      
     output = []
     for row in csv_data:
       mapped = {}
