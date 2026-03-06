@@ -11,7 +11,6 @@ class FundingRaised:
       for row in data:
         csv_data.append(row)
 
-    funding = []
     if 'company_name' in options:
       result = []
       for row in csv_data:
