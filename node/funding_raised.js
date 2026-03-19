@@ -17,6 +17,16 @@ function mapRow(row) {
   };
 }
 
+function applyFilters(data, options) {
+  return data.filter((row) => {
+    if (options.company_name && options.company_name !== row[1]) return false;
+    if (options.city && options.city !== row[4]) return false;
+    if (options.state && options.state !== row[5]) return false;
+    if (options.round && options.round !== row[9]) return false;
+    return true;
+  });
+}
+
 class FundingRaised {
   static where(options = {}) {
     const funding_file = 'startup_funding.csv';
@@ -24,17 +34,6 @@ class FundingRaised {
     let csv_data = parseCsvSync(file_data);
 
     const funding_data = [];
-
-    function applyFilters(data, options) {
-      return data.filter((row) => {
-        if (options.company_name && options.company_name !== row[1])
-          return false;
-        if (options.city && options.city !== row[4]) return false;
-        if (options.state && options.state !== row[5]) return false;
-        if (options.round && options.round !== row[9]) return false;
-        return true;
-      });
-    }
 
     csv_data = applyFilters(csv_data, options);
     
