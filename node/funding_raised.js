@@ -47,31 +47,10 @@ class FundingRaised {
   static findBy(options = {}) {
     const funding_file = 'startup_funding.csv';
     const file_data = fs.readFileSync(path.join(__dirname, '..', funding_file)).toString();
-    let csv_data = parseCsvSync(file_data);
-
-    if (options.company_name) {
-      csv_data = csv_data.filter(row => options.company_name == row[1]);
-      const row = csv_data[0];
-      return mapRow(row);
-    }
-
-    if (options.city) {
-      csv_data = csv_data.filter(row => options.city == row[4]);
-      const row = csv_data[0];
-      return mapRow(row);
-    }
-
-    if (options.state) {
-      csv_data = csv_data.filter(row => options.state == row[5]);
-      const row = csv_data[0];
-      return mapRow(row);
-    }
-
-    if (options.round) {
-      csv_data = csv_data.filter(row => options.round == row[9]);
-      const row = csv_data[0];
-      return mapRow(row);
-    }
+    const csv_data = applyFilters(parseCsvSync(file_data), options);
+   
+    const row = csv_data[0];
+    return row ? mapRow(row) : null;
   }
 }
 
