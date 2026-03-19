@@ -28,27 +28,19 @@ function applyFilters(data, options) {
 }
 
 class FundingRaised {
-  static where(options = {}) {
+  static loadData() {
     const funding_file = 'startup_funding.csv';
     const file_data = fs.readFileSync(path.join(__dirname, '..', funding_file)).toString();
-    let csv_data = parseCsvSync(file_data);
+    return parseCsvSync(file_data);
+  }
 
-    const funding_data = [];
-
-    csv_data = applyFilters(csv_data, options);
-    
-    csv_data.forEach((row) => {
-      funding_data.push(mapRow(row));
-    });
-
-    return funding_data;
+  static where(options = {}) {
+    const csv_data = applyFilters(this.loadData(), options);
+    return csv_data.map(mapRow);
   }
 
   static findBy(options = {}) {
-    const funding_file = 'startup_funding.csv';
-    const file_data = fs.readFileSync(path.join(__dirname, '..', funding_file)).toString();
-    const csv_data = applyFilters(parseCsvSync(file_data), options);
-   
+    const csv_data = applyFilters(this.loadData(), options);
     const row = csv_data[0];
     return row ? mapRow(row) : null;
   }
