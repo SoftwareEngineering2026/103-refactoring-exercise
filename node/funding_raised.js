@@ -53,69 +53,25 @@ class FundingRaised {
     if (options.company_name) {
       csv_data = csv_data.filter(row => options.company_name == row[1]);
       const row = csv_data[0];
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
-      return mapped;
+      return mapRow(row);
     }
 
     if (options.city) {
       csv_data = csv_data.filter(row => options.city == row[4]);
       const row = csv_data[0];
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
-      return mapped;
+      return mapRow(row);
     }
 
     if (options.state) {
       csv_data = csv_data.filter(row => options.state == row[5]);
       const row = csv_data[0];
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
-      return mapped;
+      return mapRow(row);
     }
 
     if (options.round) {
       csv_data = csv_data.filter(row => options.round == row[9]);
       const row = csv_data[0];
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
-      return mapped;
+      return mapRow(row);
     }
   }
 }
