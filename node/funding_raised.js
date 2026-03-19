@@ -1,6 +1,7 @@
 const parseCsvSync = require('csv-parse/lib/sync');
 const fs = require('fs');
 const path = require('path');
+const FUNDING_FILE = 'startup_funding.csv';
 
 const COLUMNS = Object.freeze({
   PERMALINK: 0,
@@ -42,7 +43,7 @@ function applyFilters(data, options) {
 
 class FundingRaised {
   static loadData() {
-    const funding_file = 'startup_funding.csv';
+    const funding_file = FUNDING_FILE;
     const file_data = fs.readFileSync(path.join(__dirname, '..', funding_file)).toString();
     return parseCsvSync(file_data);
   }
