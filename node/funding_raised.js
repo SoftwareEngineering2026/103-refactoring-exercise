@@ -2,6 +2,21 @@ const parseCsvSync = require('csv-parse/lib/sync');
 const fs = require('fs');
 const path = require('path');
 
+function mapRow(row) {
+  return {
+    permalink: row[0],
+    company_name: row[1],
+    number_employees: row[2],
+    category: row[3],
+    city: row[4],
+    state: row[5],
+    funded_date: row[6],
+    raised_amount: row[7],
+    raised_currency: row[8],
+    round: row[9],
+  };
+}
+
 class FundingRaised {
   static where(options = {}) {
     const funding_file = 'startup_funding.csv';
@@ -27,18 +42,7 @@ class FundingRaised {
     }
 
     csv_data.forEach((row) => {
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
-      funding_data.push(mapped);
+      funding_data.push(mapRow(row));
     });
 
     return funding_data;
