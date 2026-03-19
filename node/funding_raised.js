@@ -2,27 +2,40 @@ const parseCsvSync = require('csv-parse/lib/sync');
 const fs = require('fs');
 const path = require('path');
 
+const COLUMNS = Object.freeze({
+  PERMALINK: 0,
+  COMPANY_NAME: 1,
+  NUMBER_EMPLOYEES: 2,
+  CATEGORY: 3,
+  CITY: 4,
+  STATE: 5,
+  FUNDED_DATE: 6,
+  RAISED_AMOUNT: 7,
+  RAISED_CURRENCY: 8,
+  ROUND: 9,
+});
+
 function mapRow(row) {
   return {
-    permalink: row[0],
-    company_name: row[1],
-    number_employees: row[2],
-    category: row[3],
-    city: row[4],
-    state: row[5],
-    funded_date: row[6],
-    raised_amount: row[7],
-    raised_currency: row[8],
-    round: row[9],
+    permalink: row[COLUMNS.PERMALINK],
+    company_name: row[COLUMNS.COMPANY_NAME],
+    number_employees: row[COLUMNS.NUMBER_EMPLOYEES],
+    category: row[COLUMNS.CATEGORY],
+    city: row[COLUMNS.CITY],
+    state: row[COLUMNS.STATE],
+    funded_date: row[COLUMNS.FUNDED_DATE],
+    raised_amount: row[COLUMNS.RAISED_AMOUNT],
+    raised_currency: row[COLUMNS.RAISED_CURRENCY],
+    round: row[COLUMNS.ROUND],
   };
 }
 
 function applyFilters(data, options) {
-  return data.filter((row) => {
-    if (options.company_name && options.company_name !== row[1]) return false;
-    if (options.city && options.city !== row[4]) return false;
-    if (options.state && options.state !== row[5]) return false;
-    if (options.round && options.round !== row[9]) return false;
+  return data.filter(row => {
+    if (options.company_name && options.company_name !== row[COLUMNS.COMPANY_NAME]) return false;
+    if (options.city && options.city !== row[COLUMNS.CITY]) return false;
+    if (options.state && options.state !== row[COLUMNS.STATE]) return false;
+    if (options.round && options.round !== row[COLUMNS.ROUND]) return false;
     return true;
   });
 }
