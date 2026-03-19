@@ -25,22 +25,19 @@ class FundingRaised {
 
     const funding_data = [];
 
-    if (options.company_name) {
-      csv_data = csv_data.filter(row => options.company_name == row[1]);
+    function applyFilters(data, options) {
+      return data.filter((row) => {
+        if (options.company_name && options.company_name !== row[1])
+          return false;
+        if (options.city && options.city !== row[4]) return false;
+        if (options.state && options.state !== row[5]) return false;
+        if (options.round && options.round !== row[9]) return false;
+        return true;
+      });
     }
 
-    if (options.city) {
-      csv_data = csv_data.filter(row => options.city == row[4]);
-    }
-
-    if (options.state) {
-      csv_data = csv_data.filter(row => options.state == row[5]);
-    }
-
-    if (options.round) {
-      csv_data = csv_data.filter(row => options.round == row[9]);
-    }
-
+    csv_data = applyFilters(csv_data, options);
+    
     csv_data.forEach((row) => {
       funding_data.push(mapRow(row));
     });
