@@ -2,14 +2,31 @@ import csv
 
 class FundingRaised:
   @staticmethod
-  def where(options = {}):
+  def _load_data():
     with open("../startup_funding.csv", "rt") as csvfile:
       data = csv.reader(csvfile, delimiter=',', quotechar='"')
-      # skip header
       next(data)
-      csv_data = []
-      for row in data:
-        csv_data.append(row)
+      return list(data)
+    
+  @staticmethod
+  def _map_row(row):
+    return {
+      'permalink': row[0],
+      'company_name': row[1],
+      'number_employees': row[2],
+      'category': row[3],
+      'city': row[4],
+      'state': row[5],
+      'funded_date': row[6],
+      'raised_amount': row[7],
+      'raised_currency': row[8],
+      'round': row[9]
+    }
+
+  @staticmethod
+  def where(options = {}):
+    csv_data = FundingRaised._load_data()
+   
 
     funding = []
     if 'company_name' in options:
@@ -41,95 +58,36 @@ class FundingRaised:
       csv_data = result
 
     output = []
-    for row in csv_data:
-      mapped = {}
-      mapped['permalink'] = row[0]
-      mapped['company_name'] = row[1]
-      mapped['number_employees'] = row[2]
-      mapped['category'] = row[3]
-      mapped['city'] = row[4]
-      mapped['state'] = row[5]
-      mapped['funded_date'] = row[6]
-      mapped['raised_amount'] = row[7]
-      mapped['raised_currency'] = row[8]
-      mapped['round'] = row[9]
-      output.append(mapped)
 
-    return output
+for row in csv_data:
+  output.append(FundingRaised._map_row(row))
+
+return output
 
   @staticmethod
   def find_by(options):
-    with open("../startup_funding.csv", "rt") as csvfile:
-      data = csv.reader(csvfile, delimiter=',', quotechar='"')
-      # skip header
-      next(data)
-      csv_data = []
-      for row in data:
-        csv_data.append(row)
+    csv_data = FundingRaised._load_data()
+   
 
     if 'company_name' in options:
       for row in csv_data:
         if row[1] == options['company_name']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
+  return FundingRaised._map_row(row)
 
     if 'city' in options:
       for row in csv_data:
         if row[4] == options['city']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
+  return FundingRaised._map_row(row)
 
     if 'state' in options:
       for row in csv_data:
         if row[5] == options['state']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
+  return FundingRaised._map_row(row)
 
     if 'round' in options:
       for row in csv_data:
         if row[9] == options['round']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
+  return FundingRaised._map_row(row)
 
     raise RecordNotFound
 
