@@ -39,6 +39,33 @@ def test_find_by_event_by_state():
   for i in range(0, len(keys)):
     assert row[keys[i]] == values[i]
 
+def test_filter_rows_by_company_and_round():
+  csv_data = [
+    ['url1', 'Facebook', '450', 'web', 'Palo Alto', 'CA', '1-Sep-04', '500000', 'USD', 'angel'],
+    ['url2', 'Facebook', '500', 'web', 'Palo Alto', 'CA', '1-Oct-05', '1000000', 'USD', 'a'],
+    ['url3', 'Google', '1000', 'web', 'Mountain View', 'CA', '1-Jan-05', '2000000', 'USD', 'a']
+  ]
+
+  result = FundingRaised._filter_rows(
+    csv_data,
+    {'company_name': 'Facebook', 'round': 'a'}
+  )
+
+  assert len(result) == 1
+  assert result[0][1] == 'Facebook'
+  assert result[0][9] == 'a'
+
+
+def test_filter_rows_without_options():
+  csv_data = [
+    ['url1', 'Facebook', '450', 'web', 'Palo Alto', 'CA', '1-Sep-04', '500000', 'USD', 'angel'],
+    ['url2', 'Google', '1000', 'web', 'Mountain View', 'CA', '1-Jan-05', '2000000', 'USD', 'a']
+  ]
+
+  result = FundingRaised._filter_rows(csv_data, {})
+
+  assert result == csv_data
+
 test_where_returns_events()
 test_where_returns_correct_keys()
 test_where_returns_events_by_city()
@@ -48,3 +75,5 @@ test_where_returns_events_by_type()
 test_where_returns_no_events()
 test_find_by_event_by_company_name()
 test_find_by_event_by_state()
+test_filter_rows_by_company_and_round()
+test_filter_rows_without_options()
