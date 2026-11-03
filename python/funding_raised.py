@@ -1,4 +1,7 @@
 import csv
+import os
+
+CSV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'startup_funding.csv')
 
 FIELDS = [
   'permalink', 'company_name', 'number_employees', 'category', 'city',
@@ -11,18 +14,19 @@ FILTER_FIELDS = ['company_name', 'city', 'state', 'round']
 class FundingRaised:
   @staticmethod
   def _read_rows():
-    with open("../startup_funding.csv", "rt") as csvfile:
+    with open(CSV_PATH, "rt") as csvfile:
       reader = csv.reader(csvfile, delimiter=',', quotechar='"')
       next(reader)  # skip header
       return list(reader)
 
   @staticmethod
-  def _to_record(row):
-    return dict(zip(FIELDS, row))
+  def _read_records():
+    return [dict(zip(FIELDS, row)) for row in FundingRaised._read_rows()]
 
   @staticmethod
-  def where(options = {}):
-    records = [FundingRaised._to_record(row) for row in FundingRaised._read_rows()]
+  def where(options=None):
+    options = options or {}
+    records = FundingRaised._read_records()
     for field in FILTER_FIELDS:
       if field in options:
         records = [record for record in records if record[field] == options[field]]
@@ -30,7 +34,7 @@ class FundingRaised:
 
   @staticmethod
   def find_by(options):
-    records = [FundingRaised._to_record(row) for row in FundingRaised._read_rows()]
+    records = FundingRaised._read_records()
     # Unlike where, options are not combined: the first field (in
     # FILTER_FIELDS order) that has a matching record wins.
     for field in FILTER_FIELDS:

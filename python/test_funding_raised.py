@@ -55,3 +55,8 @@ def test_find_by_raises_when_nothing_matches():
 def test_find_by_raises_without_options():
   with pytest.raises(RecordNotFound):
     FundingRaised.find_by({})
+
+
+def test_where_does_not_depend_on_working_directory(tmp_path, monkeypatch):
+  monkeypatch.chdir(tmp_path)
+  assert len(FundingRaised.where()) == TOTAL_ROWS
