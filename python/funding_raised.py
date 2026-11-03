@@ -5,6 +5,9 @@ FIELDS = [
   'state', 'funded_date', 'raised_amount', 'raised_currency', 'round',
 ]
 
+# Fields that can be used in where/find_by, in the order find_by checks them.
+FILTER_FIELDS = ['company_name', 'city', 'state', 'round']
+
 class FundingRaised:
   @staticmethod
   def _read_rows():
@@ -19,42 +22,11 @@ class FundingRaised:
 
   @staticmethod
   def where(options = {}):
-    csv_data = FundingRaised._read_rows()
-
-    funding = []
-    if 'company_name' in options:
-      result = []
-      for row in csv_data:
-        if row[1] == options['company_name']:
-          result.append(row)
-      csv_data = result
-
-    if 'city' in options:
-      result = []
-      for row in csv_data:
-        if row[4] == options['city']:
-          result.append(row)
-      csv_data = result
-
-    if 'state' in options:
-      result = []
-      for row in csv_data:
-        if row[5] == options['state']:
-          result.append(row)
-      csv_data = result
-
-    if 'round' in options:
-      result = []
-      for row in csv_data:
-        if row[9] == options['round']:
-          result.append(row)
-      csv_data = result
-
-    output = []
-    for row in csv_data:
-      output.append(FundingRaised._to_record(row))
-
-    return output
+    records = [FundingRaised._to_record(row) for row in FundingRaised._read_rows()]
+    for field in FILTER_FIELDS:
+      if field in options:
+        records = [record for record in records if record[field] == options[field]]
+    return records
 
   @staticmethod
   def find_by(options):
