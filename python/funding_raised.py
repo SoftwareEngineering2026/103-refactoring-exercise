@@ -12,15 +12,17 @@ COL_RAISED_CURRENCY = 8
 COL_ROUND = 9
 
 class FundingRaised:
+
   @staticmethod
-  def where(options = {}):
+  def _load_rows():
     with open("../startup_funding.csv", "rt") as csvfile:
       data = csv.reader(csvfile, delimiter=',', quotechar='"')
-      # skip header
       next(data)
-      csv_data = []
-      for row in data:
-        csv_data.append(row)
+      return list(data)
+
+  @staticmethod
+  def where(options = {}):
+    csv_data = FundingRaised._load_rows()
 
     funding = []
     if 'company_name' in options:
@@ -70,13 +72,7 @@ class FundingRaised:
 
   @staticmethod
   def find_by(options):
-    with open("../startup_funding.csv", "rt") as csvfile:
-      data = csv.reader(csvfile, delimiter=',', quotechar='"')
-      # skip header
-      next(data)
-      csv_data = []
-      for row in data:
-        csv_data.append(row)
+    csv_data = FundingRaised._load_rows()
 
     if 'company_name' in options:
       for row in csv_data:
