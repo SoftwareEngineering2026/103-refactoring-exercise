@@ -12,6 +12,13 @@ COL_RAISED_CURRENCY = 8
 COL_ROUND = 9
 
 class FundingRaised:
+  
+  _FILTER_COLUMNS = {
+    'company_name': COL_COMPANY_NAME,
+    'city':         COL_CITY,
+    'state':        COL_STATE,
+    'round':        COL_ROUND,
+  }
 
   @staticmethod
   def _load_rows():
@@ -40,34 +47,9 @@ class FundingRaised:
   def where(options = {}):
     csv_data = FundingRaised._load_rows()
 
-    funding = []
-    if 'company_name' in options:
-      result = []
-      for row in csv_data:
-        if row[1] == options['company_name']:
-          result.append(row)
-      csv_data = result
-
-    if 'city' in options:
-      result = []
-      for row in csv_data:
-        if row[4] == options['city']:
-          result.append(row)
-      csv_data = result
-
-    if 'state' in options:
-      result = []
-      for row in csv_data:
-        if row[5] == options['state']:
-          result.append(row)
-      csv_data = result
-
-    if 'round' in options:
-      result = []
-      for row in csv_data:
-        if row[9] == options['round']:
-          result.append(row)
-      csv_data = result
+    for field, col in FundingRaised._FILTER_COLUMNS.items():
+      if field in options:
+        csv_data = [row for row in csv_data if row[col] == options[field]]
 
     return [FundingRaised._row_to_dict(row) for row in csv_data]
 
