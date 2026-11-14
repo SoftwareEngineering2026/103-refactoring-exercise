@@ -12,7 +12,7 @@ COL_RAISED_CURRENCY = 8
 COL_ROUND = 9
 
 class FundingRaised:
-  
+
   _FILTER_COLUMNS = {
     'company_name': COL_COMPANY_NAME,
     'city':         COL_CITY,
@@ -55,29 +55,10 @@ class FundingRaised:
 
   @staticmethod
   def find_by(options):
-    csv_data = FundingRaised._load_rows()
-
-    if 'company_name' in options:
-      for row in csv_data:
-        if row[1] == options['company_name']:
-          return FundingRaised._row_to_dict(row)
-
-    if 'city' in options:
-      for row in csv_data:
-        if row[4] == options['city']:
-          return FundingRaised._row_to_dict(row)
-
-    if 'state' in options:
-      for row in csv_data:
-        if row[5] == options['state']:
-          return FundingRaised._row_to_dict(row)
-
-    if 'round' in options:
-      for row in csv_data:
-        if row[9] == options['round']:
-          return FundingRaised._row_to_dict(row)
-
-    raise RecordNotFound
+    results = FundingRaised.where(options)
+    if not results:
+      raise RecordNotFound
+    return results[0]
 
 class RecordNotFound(Exception):
   pass
