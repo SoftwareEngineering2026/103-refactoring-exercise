@@ -1,5 +1,16 @@
 import csv
 
+COL_PERMALINK = 0
+COL_COMPANY_NAME = 1
+COL_NUMBER_EMPLOYEES = 2
+COL_CATEGORY = 3
+COL_CITY = 4
+COL_STATE = 5
+COL_FUNDED_DATE = 6
+COL_RAISED_AMOUNT = 7
+COL_RAISED_CURRENCY = 8
+COL_ROUND = 9
+
 class FundingRaised:
   @staticmethod
   def where(options = {}):
