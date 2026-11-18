@@ -1,4 +1,4 @@
-from funding_raised import FundingRaised
+from funding_raised import FundingRaised, RecordNotFound
 
 def test_where_returns_events():
   assert len(FundingRaised.where({'company_name': 'Facebook'})) == 7
@@ -39,6 +39,40 @@ def test_find_by_event_by_state():
   for i in range(0, len(keys)):
     assert row[keys[i]] == values[i]
 
+
+def test_where_multiple_filters():
+    rows = FundingRaised.where({
+        'company_name': 'Facebook',
+        'round': 'a'
+    })
+
+    assert len(rows) == 1
+    assert rows[0]['company_name'] == 'Facebook'
+    assert rows[0]['round'] == 'a'
+
+
+def test_find_by_priority():
+    row = FundingRaised.find_by({
+        'company_name': 'Facebook',
+        'city': 'Tempe'
+    })
+
+    assert row['company_name'] == 'Facebook'
+
+
+def test_find_by_not_found():
+    try:
+        FundingRaised.find_by({
+            'company_name': 'NonExistentCompany123'
+        })
+    except RecordNotFound:
+        pass
+    else:
+        raise AssertionError(
+            'Expected RecordNotFound exception'
+        )
+
+
 test_where_returns_events()
 test_where_returns_correct_keys()
 test_where_returns_events_by_city()
@@ -48,3 +82,7 @@ test_where_returns_events_by_type()
 test_where_returns_no_events()
 test_find_by_event_by_company_name()
 test_find_by_event_by_state()
+
+test_where_multiple_filters()
+test_find_by_priority()
+test_find_by_not_found()
