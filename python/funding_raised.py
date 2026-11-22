@@ -1,137 +1,80 @@
 import csv
+from pathlib import Path
 
-class FundingRaised:
-  @staticmethod
-  def where(options = {}):
-    with open("../startup_funding.csv", "rt") as csvfile:
-      data = csv.reader(csvfile, delimiter=',', quotechar='"')
-      # skip header
-      next(data)
-      csv_data = []
-      for row in data:
-        csv_data.append(row)
+DEFAULT_CSV_PATH = Path("../startup_funding.csv")
 
-    funding = []
-    if 'company_name' in options:
-      result = []
-      for row in csv_data:
-        if row[1] == options['company_name']:
-          result.append(row)
-      csv_data = result
+COLUMNS = (
+    "permalink",
+    "company_name",
+    "number_employees",
+    "category",
+    "city",
+    "state",
+    "funded_date",
+    "raised_amount",
+    "raised_currency",
+    "round",
+)
 
-    if 'city' in options:
-      result = []
-      for row in csv_data:
-        if row[4] == options['city']:
-          result.append(row)
-      csv_data = result
+FILTER_COLUMNS = {
+    "company_name": 1,
+    "city": 4,
+    "state": 5,
+    "round": 9,
+}
 
-    if 'state' in options:
-      result = []
-      for row in csv_data:
-        if row[5] == options['state']:
-          result.append(row)
-      csv_data = result
-
-    if 'round' in options:
-      result = []
-      for row in csv_data:
-        if row[9] == options['round']:
-          result.append(row)
-      csv_data = result
-
-    output = []
-    for row in csv_data:
-      mapped = {}
-      mapped['permalink'] = row[0]
-      mapped['company_name'] = row[1]
-      mapped['number_employees'] = row[2]
-      mapped['category'] = row[3]
-      mapped['city'] = row[4]
-      mapped['state'] = row[5]
-      mapped['funded_date'] = row[6]
-      mapped['raised_amount'] = row[7]
-      mapped['raised_currency'] = row[8]
-      mapped['round'] = row[9]
-      output.append(mapped)
-
-    return output
-
-  @staticmethod
-  def find_by(options):
-    with open("../startup_funding.csv", "rt") as csvfile:
-      data = csv.reader(csvfile, delimiter=',', quotechar='"')
-      # skip header
-      next(data)
-      csv_data = []
-      for row in data:
-        csv_data.append(row)
-
-    if 'company_name' in options:
-      for row in csv_data:
-        if row[1] == options['company_name']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
-
-    if 'city' in options:
-      for row in csv_data:
-        if row[4] == options['city']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
-
-    if 'state' in options:
-      for row in csv_data:
-        if row[5] == options['state']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
-
-    if 'round' in options:
-      for row in csv_data:
-        if row[9] == options['round']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
-
-    raise RecordNotFound
 
 class RecordNotFound(Exception):
-  pass
+    pass
+
+
+class FundingRaised:
+    @staticmethod
+    def _load_rows(csv_path: Path = DEFAULT_CSV_PATH) -> list[list[str]]:
+        with open(csv_path, "rt", encoding="utf-8") as csvfile:
+            reader = csv.reader(csvfile, delimiter=",", quotechar='"')
+            next(reader, None)  # skip header
+            return list(reader)
+
+    @staticmethod
+    def _map_row(row: list[str]) -> dict[str, str]:
+        return dict(zip(COLUMNS, row))
+
+    @staticmethod
+    def _validate_options(options: dict[str, str]) -> None:
+        invalid_keys = set(options) - set(FILTER_COLUMNS)
+        if invalid_keys:
+            raise KeyError(f"Unknown filter options: {sorted(invalid_keys)}")
+
+    @classmethod
+    def where(
+        cls,
+        options: dict[str, str] | None = None,
+        csv_path: Path = DEFAULT_CSV_PATH,
+    ) -> list[dict[str, str]]:
+        filters = options or {}
+        cls._validate_options(filters)
+
+        rows = cls._load_rows(csv_path)
+        for key, value in filters.items():
+            column_index = FILTER_COLUMNS[key]
+            rows = [row for row in rows if row[column_index] == value]
+
+        return [cls._map_row(row) for row in rows]
+
+    @classmethod
+    def find_by(
+        cls,
+        options: dict[str, str],
+        csv_path: Path = DEFAULT_CSV_PATH,
+    ) -> dict[str, str]:
+        cls._validate_options(options)
+
+        rows = cls._load_rows(csv_path)
+        for key, value in options.items():
+            column_index = FILTER_COLUMNS[key]
+            for row in rows:
+                if row[column_index] == value:
+                    return cls._map_row(row)
+
+        raise RecordNotFound
